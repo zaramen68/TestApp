@@ -37,6 +37,7 @@ int main()
     if (!conn.Open())
     {
         std::cout << "Test app start error\n";
+        return 0;
     }
 
     conn.ExecuteQuery(sql_create_parent_table);
@@ -46,7 +47,6 @@ int main()
         if(item->ParentId != ""){
             conn.ExecuteQueryBind("categories", item);
         } else {
-
             std::string sql_req ="INSERT INTO parent_categories (guid, id, is_full, name, rewver, load_stamp) VALUES('"+
                 item->Guid+"', "+
                 item->Id+", "+
