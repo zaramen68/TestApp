@@ -21,7 +21,7 @@ sqlite3* DbConnection::OpenDB(const char* DbFile)
 			const char* errMsg = sqlite3_errstr(result);
 			if (errMsg == 0)
 			{
-				errMsg = "Не удалось подключиться к БД";
+				errMsg = "пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ";
 			}
 
 			if ((result == SQLITE_BUSY) || (result == SQLITE_LOCKED))
@@ -34,7 +34,7 @@ sqlite3* DbConnection::OpenDB(const char* DbFile)
 							throw std::exception(errMsg);
 						else
 							break;
-					
+
 				TryCount++;
 				std::this_thread::sleep_for(std::chrono::milliseconds(SleepTime));
 				continue;
@@ -88,4 +88,30 @@ void DbConnection::Close()
 void DbConnection::ExecuteQuery(const char* sql)
 {
 	Db::ExecuteQuery(sql, _db, true);
+}
+
+void DbConnection::ExecuteQueryBind(const char* table_name, std::shared_ptr<Entity> entity){
+
+	sqlite3_stmt *stmt;
+	std::string sql_req = "INSERT INTO " + std::string(table_name) +
+		" (guid, id, is_full, name, parent_id, rewver, load_stamp) VALUES(?1, ?2, ?3, ?4, ?5, ?6, ?7);";
+
+	sqlite3_prepare_v2(_db, sql_req.c_str(), -1, &stmt, NULL);
+	sqlite3_bind_text(stmt, 1, entity->Guid.c_str(), entity->Guid.length(), SQLITE_STATIC);
+	sqlite3_bind_int(stmt, 2, atoi(entity->Id.c_str()));
+	sqlite3_bind_int(stmt, 3, static_cast<int>(entity->IsFull));
+	sqlite3_bind_text(stmt, 4, entity->Name.c_str(), entity->Name.length(), SQLITE_STATIC);
+	sqlite3_bind_int(stmt, 5, atoi(entity->ParentId.c_str()));
+	sqlite3_bind_int(stmt, 6, entity->RowVer);
+	sqlite3_bind_text(stmt, 7, entity->loadStamp.c_str(), entity->loadStamp.length(), SQLITE_STATIC);
+
+
+
+	int rc = sqlite3_step(stmt);
+	if (rc != SQLITE_DONE) {
+		printf("ERROR inserting data: %s\n", sqlite3_errmsg(_db));
+		return;
+	}
+
+	sqlite3_finalize(stmt);
 }

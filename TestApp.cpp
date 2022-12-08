@@ -7,8 +7,8 @@
 #include "entity.h"
 
 constexpr const char* data_file_name = "data.json";
-constexpr const char* sql_create_parent_table = "CREATE TABLE IF NOT EXISTS parent_categories(" 
-    "grid TEXT,"
+constexpr const char* sql_create_parent_table = "CREATE TABLE IF NOT EXISTS parent_categories("
+    "guid TEXT,"
     "id INTEGER,"
     "is_full BOOLEAN NOT NULL CHECK(is_full IN(0, 1)),"
     "name TEXT,"
@@ -17,7 +17,7 @@ constexpr const char* sql_create_parent_table = "CREATE TABLE IF NOT EXISTS pare
     "PRIMARY KEY(id, name));";
 
 constexpr const char* sql_create_categories_table = "CREATE TABLE IF NOT EXISTS categories("
-    "grid TEXT,"
+    "guid TEXT,"
     "id INTEGER,"
     "is_full BOOLEAN NOT NULL CHECK(is_full IN(0, 1)),"
     "name TEXT,"
@@ -25,7 +25,7 @@ constexpr const char* sql_create_categories_table = "CREATE TABLE IF NOT EXISTS 
     "rewver INTEGER,"
     "load_stamp TEXT,"
     "PRIMARY KEY(id, name),"
-    "FOREIGN KEY (parent_id)  REFERENCES parent_categories (id);";
+    "FOREIGN KEY (parent_id)  REFERENCES parent_categories (id));";
 
 int main()
 {
@@ -38,21 +38,41 @@ int main()
     {
         std::cout << "Test app start error\n";
     }
-    std::cout << "Hello from test app!\n";
+
+    conn.ExecuteQuery(sql_create_parent_table);
+    conn.ExecuteQuery(sql_create_categories_table);
+
+    for (auto item : entities.good_line){
+        if(item->ParentId != ""){
+            conn.ExecuteQueryBind("categories", item);
+        } else {
+
+            std::string sql_req ="INSERT INTO parent_categories (guid, id, is_full, name, rewver, load_stamp) VALUES('"+
+                item->Guid+"', "+
+                item->Id+", "+
+                std::to_string(static_cast<int>(item->IsFull))+", '"+
+                item->Name+"', "+
+                std::to_string(item->RowVer)+", '"+
+                item->loadStamp+"');";
+
+            conn.ExecuteQuery(sql_req.c_str());
+        }
+    }
+return 1;
+
 }
-
 /*
-Общее задание из файла data.json импортировать данные в бд
-Описание требований:
-* для набора данных создать бизнес объект (struct, class) и использовать указатель или умный указатель
-* десериализовать данные в объекты
-* записать в бд из объектов
+пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ data.json пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ
+пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:
+* пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (struct, class) пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
-Примечания:
-Для десериализации рекомендуется использовать библиотеки, любая на выбор
+пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:
+пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 rapidjson - https://github.com/Tencent/rapidjson/
 json.hpp - https://github.com/nlohmann/json
 
-Для разработки Visual studio 2019-2022 community edition будет достаточно
+пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ Visual studio 2019-2022 community edition пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 */

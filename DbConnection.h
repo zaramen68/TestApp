@@ -3,6 +3,8 @@
 #include "libs/sqlite3/sqlite3.h"
 #include <string>
 #include <functional>
+#include <memory>
+#include "entity.h"
 
 class DbConnection {
 private:
@@ -43,6 +45,8 @@ public:
     void Close();
 
 	void ExecuteQuery(const char* sql);
+	void ExecuteQueryBind(const char* table_name, std::shared_ptr<Entity> entity);
+
 	~DbConnection()
     {
 		if (m_isCloseOnDestory)
