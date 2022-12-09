@@ -23,7 +23,7 @@
     <ClCompile Include="Db.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Work.cpp">
+    <ClCompile Include="EntityStruct.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,6 +44,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityStruct.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

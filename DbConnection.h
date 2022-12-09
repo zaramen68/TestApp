@@ -4,7 +4,7 @@
 #include <string>
 #include <functional>
 #include <memory>
-#include "entity.h"
+#include "EntityStruct.h"
 
 class DbConnection {
 private:

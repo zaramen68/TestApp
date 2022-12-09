@@ -3,26 +3,10 @@
 #include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
+#include "EntityStruct.h"
 
 using json = nlohmann::json;
 
-struct Entity {
-    std::string Guid;
-    std::string Id;
-    bool IsFull;
-    std::string Name;
-    std::string ParentId;
-    unsigned int RowVer;
-    std::string loadStamp;
-};
-
-struct EList {
-    std::vector<Entity> e_line;
-};
-
-struct SPEList {
-    std::vector<std::shared_ptr<Entity>> e_line;
-};
 
 void operator >> (const json& js, Entity& entity) {
     js.at("Guid").get_to(entity.Guid);

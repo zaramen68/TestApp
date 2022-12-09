@@ -4,7 +4,7 @@
 #include <iostream>
 #include "libs/sqlite3/sqlite3.h"
 #include "DbConnection.h"
-#include "entity.h"
+#include "EntityStruct.h"
 
 constexpr const char* data_file_name = "data.json";
 constexpr const char* sql_create_parent_table = "CREATE TABLE IF NOT EXISTS parent_categories("
