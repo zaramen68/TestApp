@@ -43,7 +43,7 @@ int main()
     conn.ExecuteQuery(sql_create_parent_table);
     conn.ExecuteQuery(sql_create_categories_table);
 
-    for (auto item : entities.good_line){
+    for (auto item : entities.e_line){
         if(item->ParentId != ""){
             conn.ExecuteQueryBind("categories", item);
         } else {
