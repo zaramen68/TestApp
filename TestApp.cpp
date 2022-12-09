@@ -1,10 +1,17 @@
 // TestApp.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
+// Пришлось поменять версию решения v143 на v142. У меня VS2019.
+//
 
 #include <iostream>
 #include "libs/sqlite3/sqlite3.h"
 #include "DbConnection.h"
 #include "EntityStruct.h"
+
+//
+// Как я уже писал в другом файле, структура данных подталкивает на создание двух таблиц.
+// Поскольку никаких указаний по архитектуре БД, вроде нет, то я позволил себе эту вольность.
+//
 
 constexpr const char* data_file_name = "data.json";
 constexpr const char* sql_create_parent_table = "CREATE TABLE IF NOT EXISTS parent_categories("
@@ -44,6 +51,12 @@ int main()
     conn.ExecuteQuery(sql_create_categories_table);
 
     for (auto item : entities.e_line){
+        //
+        // Тут два подхода к запросам в БД: используя ваш функционал и с bind.
+        // Используя format строки в С20 веркии можно было бы, наверное, написать красивее.
+        // Но у меня C17
+        //
+
         if(item->ParentId != ""){
             conn.ExecuteQueryBind("categories", item);
         } else {

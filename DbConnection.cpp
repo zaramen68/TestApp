@@ -90,6 +90,11 @@ void DbConnection::ExecuteQuery(const char* sql)
 	Db::ExecuteQuery(sql, _db, true);
 }
 
+// Я добавил эту функцию для разнообразия.
+// Не хотелось ограничиваться только работой со строками.
+// Вообще-то с чистым sqlite3 на С я мало работал.
+// Больше сталкивался с sqlitecpp.
+
 void DbConnection::ExecuteQueryBind(const char* table_name, std::shared_ptr<Entity> entity){
 
 	sqlite3_stmt *stmt;

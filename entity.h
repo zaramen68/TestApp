@@ -7,6 +7,8 @@
 
 using json = nlohmann::json;
 
+// Тут конечно много лишнего. Как функции, так и операторы.  Для работы достаточно чего-то одного
+//
 
 void operator >> (const json& js, Entity& entity) {
     js.at("Guid").get_to(entity.Guid);
@@ -65,5 +67,3 @@ void json_to_struct(const json& js, Entity& entity) {
     js.at("RowVer").get_to(entity.RowVer);
     js.at("loadStamp").get_to(entity.loadStamp);
 }
-
-void make_entities_list(const char*, SPEList&);
